@@ -1,7 +1,6 @@
 
 art_make( MODULE_LIBRARIES nusimdata_SimulationBase
-                           nutools_EventGeneratorBase_CRY
-                           nutools_EventGeneratorBase_GENIE
+                           nugen_EventGeneratorBase_GENIE
                         art_Framework_Services_Optional_RandomNumberGenerator_service
                         art_Framework_Services_Registry
 # for MixGenieEvents_module
@@ -22,7 +21,6 @@ art_make( MODULE_LIBRARIES nusimdata_SimulationBase
                         ${GENIE_LIB_LIST}
                         ${CLHEP}
                         ${DK2NU_TREE}
-                        ${CRY}
                         ${ROOT_BASIC_LIB_LIST}
                         ${ROOT_EG}
                         ${ROOT_TREEPLAYER}

@@ -105,12 +105,12 @@
 
 #endif
 
-//NuTools includes
+// NuGen includes
 #include "nusimdata/SimulationBase/MCTruth.h"
 #include "nusimdata/SimulationBase/MCParticle.h"
 #include "nusimdata/SimulationBase/MCNeutrino.h"
 #include "nusimdata/SimulationBase/GTruth.h"
-#include "nutools/NuReweight/art/NuReweight.h"
+#include "nugen/NuReweight/art/NuReweight.h"
 
 namespace rwgt {
 

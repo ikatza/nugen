@@ -28,10 +28,10 @@
 #include "messagefacility/MessageLogger/MessageLogger.h"
 
 
-#include "nutools/EventGeneratorBase/evgenbase.h"
-#include "nutools/EventGeneratorBase/GENIE/GENIEHelper.h"
+#include "nugen/EventGeneratorBase/evgenbase.h"
+#include "nugen/EventGeneratorBase/GENIE/GENIEHelper.h"
 
-#include "nutools/EventGeneratorBase/GENIE/EVGBAssociationUtil.h"
+#include "nugen/EventGeneratorBase/GENIE/EVGBAssociationUtil.h"
 
 #include "nusimdata/SimulationBase/MCTruth.h"
 #include "nusimdata/SimulationBase/MCFlux.h"

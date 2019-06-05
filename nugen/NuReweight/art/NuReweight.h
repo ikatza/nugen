@@ -5,7 +5,7 @@
 /// \author  nathan.mayer@tufts.edu
 ////////////////////////////////////////////////////////////////////////
 
-#include "nutools/NuReweight/GENIEReweight.h"
+#include "nugen/NuReweight/GENIEReweight.h"
 
 namespace simb  { class MCTruth;      }
 namespace simb  { class GTruth;       }

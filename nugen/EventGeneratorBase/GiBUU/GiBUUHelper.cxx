@@ -15,9 +15,9 @@
   #include "GENIE/Framework/EventGen/EventRecord.h"
 #endif
 
-// NuTools includes
-#include "nutools/EventGeneratorBase/evgenbase.h"
-#include "nutools/EventGeneratorBase/GiBUU/GiBUUHelper.h"
+// NuGen includes
+#include "nugen/EventGeneratorBase/evgenbase.h"
+#include "nugen/EventGeneratorBase/GiBUU/GiBUUHelper.h"
 #include "nusimdata/SimulationBase/MCTruth.h"
 #include "nusimdata/SimulationBase/MCFlux.h"
 #include "nusimdata/SimulationBase/GTruth.h"

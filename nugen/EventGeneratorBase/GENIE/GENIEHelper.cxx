@@ -153,13 +153,13 @@
 #include "dk2nu/tree/NuChoice.h"
 #include "dk2nu/genie/GDk2NuFlux.h"
 
-// NuTools includes
-#include "nutools/EventGeneratorBase/evgenbase.h"
-#include "nutools/EventGeneratorBase/GENIE/GENIEHelper.h"
+// NuGen includes
+#include "nugen/EventGeneratorBase/evgenbase.h"
+#include "nugen/EventGeneratorBase/GENIE/GENIEHelper.h"
 
-#include "nutools/EventGeneratorBase/GENIE/GENIE2ART.h"
-#include "nutools/EventGeneratorBase/GENIE/EvtTimeShiftFactory.h"
-#include "nutools/EventGeneratorBase/GENIE/EvtTimeShiftI.h"
+#include "nugen/EventGeneratorBase/GENIE/GENIE2ART.h"
+#include "nugen/EventGeneratorBase/GENIE/EvtTimeShiftFactory.h"
+#include "nugen/EventGeneratorBase/GENIE/EvtTimeShiftI.h"
 
 // nusimdata includes
 #include "nusimdata/SimulationBase/MCTruth.h"

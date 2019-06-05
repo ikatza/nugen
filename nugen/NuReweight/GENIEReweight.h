@@ -11,7 +11,7 @@
 #include <map>
 #include <set>
 #include <fstream>
-#include "nutools/NuReweight/ReweightLabels.h"
+#include "nugen/NuReweight/ReweightLabels.h"
 
 //namespace simb  { class MCTruth;      }
 //namespace simb  { class GTruth;       }

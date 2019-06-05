@@ -113,12 +113,12 @@
 using genie::Messenger;
 
 
-//NuTools includes
+// NuGen includes
 #include "nusimdata/SimulationBase/MCTruth.h"
 #include "nusimdata/SimulationBase/MCParticle.h"
 #include "nusimdata/SimulationBase/MCNeutrino.h"
 #include "nusimdata/SimulationBase/GTruth.h"
-#include "nutools/NuReweight/GENIEReweight.h"
+#include "nugen/NuReweight/GENIEReweight.h"
 
 // Framework includes
 //#include "messagefacility/MessageLogger/MessageLogger.h"

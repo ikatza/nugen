@@ -15,11 +15,11 @@
 #include "nusimdata/SimulationBase/GTruth.h"
 #include "nusimdata/SimulationBase/MCFlux.h"
 // for sim::GetRandomNumberSeed()
-#include "nutools/EventGeneratorBase/evgenbase.h"
+#include "nugen/EventGeneratorBase/evgenbase.h"
 
-#include "nutools/EventGeneratorBase/GENIE/GENIE2ART.h"
-#include "nutools/EventGeneratorBase/GENIE/EvtTimeShiftI.h"
-#include "nutools/EventGeneratorBase/GENIE/EvtTimeShiftFactory.h"
+#include "nugen/EventGeneratorBase/GENIE/GENIE2ART.h"
+#include "nugen/EventGeneratorBase/GENIE/EvtTimeShiftI.h"
+#include "nugen/EventGeneratorBase/GENIE/EvtTimeShiftFactory.h"
 
 // GENIE includes
 #ifdef GENIE_PRE_R3
@@ -68,7 +68,7 @@
 #include <cstdio>
 #include <iomanip>
 
-#include "nutools/EventGeneratorBase/GENIE/EVGBAssociationUtil.h"
+#include "nugen/EventGeneratorBase/GENIE/EVGBAssociationUtil.h"
 
 namespace evg {
   class AddGenieEventsToArt;

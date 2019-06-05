@@ -13,8 +13,8 @@
 #include "nusimdata/SimulationBase/MCFlux.h"
 #include "nusimdata/SimulationBase/GTruth.h"
 
-#include "nutools/EventGeneratorBase/GENIE/GENIE2ART.h"
-#include "nutools/EventGeneratorBase/GENIE/MCTruthAndFriendsItr.h"
+#include "nugen/EventGeneratorBase/GENIE/GENIE2ART.h"
+#include "nugen/EventGeneratorBase/GENIE/MCTruthAndFriendsItr.h"
 
 // GENIE includes
 #ifdef GENIE_PRE_R3
