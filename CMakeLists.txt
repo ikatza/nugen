@@ -1,8 +1,8 @@
 # ======================================================================
-#  nutools main build file
+#  nugen main build file
 #
 #  cd .../path/to/build/directory
-#  source .../path/to/nutools/ups/setup_for_development
+#  source .../path/to/nugen/ups/setup_for_development
 #  cmake [-DCMAKE_INSTALL_PREFIX=/install/path]
 #        -DCMAKE_BUILD_TYPE=$CETPKG_TYPE
 #        $CETPKG_SOURCE
@@ -13,31 +13,24 @@
 #  make package (builds distribution tarfile)
 # ======================================================================
 
+cmake_minimum_required(VERSION 3.11)  # use cmake 3.11 or later
 
-# use cmake 2.8 or later
-cmake_minimum_required (VERSION 3.3)
-
-project(nutools)
+project(nugen)
 
 # cetbuildtools contains our cmake modules
-SET ( CETBUILDTOOLS_VERSION $ENV{CETBUILDTOOLS_VERSION} )
-IF (NOT CETBUILDTOOLS_VERSION)
-    MESSAGE (FATAL_ERROR "ERROR: setup cetbuildtools to get the cmake modules")
-ENDIF()
+find_package(cetbuildtools REQUIRED)
 
-set(CMAKE_MODULE_PATH $ENV{CANVAS_ROOT_IO_DIR}/Modules
-                      $ENV{CETBUILDTOOLS_DIR}/Modules
-                      ${CMAKE_MODULE_PATH})
+list(APPEND CMAKE_MODULE_PATH
+  $ENV{CANVAS_ROOT_IO_DIR}/Modules
+  $ENV{ART_DIR}/Modules)
 
 include(CetCMakeEnv)
 cet_cmake_env()
 
-# -D_GLIBCXX_USE_NANOSLEEP is needed to make std::this_thread::sleep_for available.
 cet_set_compiler_flags(DIAGS CAUTIOUS WERROR
                        NO_UNDEFINED
                        EXTRA_FLAGS -pedantic
-                       EXTRA_CXX_FLAGS -D_GLIBCXX_USE_NANOSLEEP
-                                       -Wno-unused-local-typedefs -Wno-variadic-macros)
+                       EXTRA_CXX_FLAGS -Wno-unused-local-typedefs -Wno-variadic-macros)
 cet_report_compiler_flags()
 
 # these are minimum required versions, not the actual product versions
@@ -51,7 +44,6 @@ find_ups_product( postgresql )
 find_ups_product( nusimdata )
 find_ups_product( cetlib )
 find_ups_product( cetlib_except )
-find_ups_geant4( )
 find_ups_product( cetbuildtools )
 
 message(STATUS "ROOTSYS is ${ROOTSYS}")
@@ -62,7 +54,6 @@ cet_find_library( PYTHIA6 NAMES Pythia6 PATHS ENV PYLIB NO_DEFAULT_PATH )
 cet_find_library( LHAPDF NAMES LHAPDF PATHS ENV LHAPDF_LIB NO_DEFAULT_PATH )
 cet_find_library( LOG4CPP NAMES log4cpp PATHS ENV LOG4CPP_LIB NO_DEFAULT_PATH )
 cet_find_library( XML2 NAMES xml2 PATHS $ENV{LIBXML2_FQ_DIR}/lib NO_DEFAULT_PATH )
-cet_find_library( CRY NAMES CRY PATHS ENV CRY_LIB NO_DEFAULT_PATH )
 
 
 # genie-config for R-2 series didn't support --version (returns blank)
@@ -71,14 +62,14 @@ cet_find_library( CRY NAMES CRY PATHS ENV CRY_LIB NO_DEFAULT_PATH )
 #execute_process(COMMAND cat ${GENIE}/VERSION OUTPUT_VARIABLE GENIE_VERSION)
 #string(STRIP ${GENIE_VERSION} GENIE_VERSION)
 #string(SUBSTRING ${GENIE_VERSION} 0 1 GENIE_MAJOR_VERSION)
-#MESSAGE("--NUTOOLS-- GENIE_VERSION=${GENIE_VERSION} major=${GENIE_MAJOR_VERSION}")
+#MESSAGE("--NUGEN-- GENIE_VERSION=${GENIE_VERSION} major=${GENIE_MAJOR_VERSION}")
 #if( ${GENIE_MAJOR_VERSION} LESS 3 )
 
 # use GENIE UPS version to decide ...
 parse_ups_version( ${GENIE_VERSION} )
 if( ${VMAJ} LESS 3 )
   add_definitions(-DGENIE_PRE_R3)
-#  MESSAGE("--NUTOOLS-- GENIE_VERSION=${VMAJ} ${VMIN} -DGENIE_PRE_R3")
+#  MESSAGE("--NUGEN-- GENIE_VERSION=${VMAJ} ${VMIN} -DGENIE_PRE_R3")
 # these are the pre-R-3 library names
   cet_find_library( GALGORITHM NAMES GAlgorithm PATHS ENV GENIE_LIB NO_DEFAULT_PATH )
   cet_find_library( GBARYONRESONANCE NAMES GBaryonResonance PATHS ENV GENIE_LIB NO_DEFAULT_PATH )
@@ -176,7 +167,7 @@ if( ${VMAJ} LESS 3 )
                       )
 else()
 # these are the POST-R-3 library names
-#  MESSAGE("--NUTOOLS-- GENIE_VERSION=${VMAJ} ${VMIN} not defining -DGENIE_PRE_R3")
+#  MESSAGE("--NUGEN-- GENIE_VERSION=${VMAJ} ${VMIN} not defining -DGENIE_PRE_R3")
 
   cet_find_library( GFWMSG       NAMES GFwMsg       PATHS ENV GENIE_LIB NO_DEFAULT_PATH )
   cet_find_library( GFWREG       NAMES GFwReg       PATHS ENV GENIE_LIB NO_DEFAULT_PATH )
@@ -295,7 +286,7 @@ else()
                       )
 
 endif()
-#MESSAGE("--NUTOOLS-- GENIE ${VMAJ} messenger ${GMESSENGER} gfwmsg ${GFWMSG} GENIE_LIB_LIST=${GENIE_LIB_LIST}")
+#MESSAGE("--NUGEN-- GENIE ${VMAJ} messenger ${GMESSENGER} gfwmsg ${GFWMSG} GENIE_LIB_LIST=${GENIE_LIB_LIST}")
 
 # dk2nu
 cet_find_library( DK2NU_TREE  NAMES dk2nuTree  PATHS ENV DK2NUDATA_LIB NO_DEFAULT_PATH )
@@ -312,28 +303,16 @@ include_directories( $ENV{IFDH_ART_FQ_DIR}/inc )
 
 # macros
 include(ArtMake)
-include(ArtDictionary)
 include(BuildPlugins)
-include(CetRootCint)
 
 # include search path
 include_directories ( $ENV{GENIE_INC}/GENIE )
 include_directories ( $ENV{GENIE_REWEIGHT}/src )
 include_directories ( $ENV{LIBXML2_INC} )
-include_directories ( $ENV{G4INCLUDE} )
-include_directories ( $ENV{XERCES_C_INC} )
-include_directories ( $ENV{CRYHOME}/src )
 include_directories ( $ENV{LOG4CPP_INC} )
 
-# included for Mac OSX using XQuartz for X11
-if(APPLE)
-  include_directories ( /opt/X11/include )
-endif()
-
 # source
-add_subdirectory (nutools)
-add_subdirectory (tools)
-add_subdirectory (test)
+add_subdirectory (nugen)
 
 # ups - table and config files
 add_subdirectory(ups)
