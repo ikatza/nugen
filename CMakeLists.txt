@@ -313,6 +313,7 @@ include_directories ( $ENV{LOG4CPP_INC} )
 
 # source
 add_subdirectory (nugen)
+add_subdirectory (tools)
 
 # ups - table and config files
 add_subdirectory(ups)
