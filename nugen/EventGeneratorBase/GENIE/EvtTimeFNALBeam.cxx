@@ -42,7 +42,7 @@ TIMESHIFTREG3(evgb,EvtTimeFNALBeam,evgb::EvtTimeFNALBeam)
 
 //GENIE includes
 #ifdef GENIE_PRE_R3
-  #include "GENIE/Framework/Utils/StringUtils.h"
+  #include "GENIE/Utils/StringUtils.h"
 #else
   #include "GENIE/Framework/Utils/StringUtils.h"
 #endif

@@ -25,13 +25,13 @@
 #ifdef GENIE_PRE_R3
   #include "Ntuple/NtpMCEventRecord.h"
   #include "Ntuple/NtpMCTreeHeader.h"
-  #include "Framework/ParticleData/PDGLibrary.h"
+  #include "PDG/PDGLibrary.h"
   // -- GENIE Messenger conflict LOG_INFO w/ ART messagefacility
   //#include "Messenger/Messenger.h"
-  #include "Framework/GHEP/GHepRecord.h"
+  #include "GHEP/GHepRecord.h"
 
-  #include "Tools/Flux/GNuMIFlux.h"
-  #include "Tools/Flux/GSimpleNtpFlux.h"
+  #include "FluxDrivers/GNuMIFlux.h"
+  #include "FluxDrivers/GSimpleNtpFlux.h"
 #else
   #include "GENIE/Framework/ParticleData/PDGLibrary.h"
   #include "GENIE/Framework/GHEP/GHepRecord.h"

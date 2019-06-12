@@ -10,7 +10,7 @@
 
 // GENIE includes
 #ifdef GENIE_PRE_R3
-  #include "Framework/EventGen/EventRecord.h"
+  #include "EVGCore/EventRecord.h"
 #else
   #include "GENIE/Framework/EventGen/EventRecord.h"
 #endif

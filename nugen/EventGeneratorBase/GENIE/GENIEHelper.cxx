@@ -37,57 +37,57 @@
 
 //GENIE includes
 #ifdef GENIE_PRE_R3
-  #include "GENIE/Framework/Messenger/Messenger.h"
-  #include "GENIE/Framework/Conventions/GVersion.h"
-  #include "GENIE/Framework/Conventions/Units.h"
-  #include "GENIE/Framework/EventGen/EventRecord.h"
+  #include "GENIE/Messenger/Messenger.h"
+  #include "GENIE/Conventions/GVersion.h"
+  #include "GENIE/Conventions/Units.h"
+  #include "GENIE/EVGCore/EventRecord.h"
   #include "GENIE/EVGDrivers/GMCJDriver.h"
-  #include "GENIE/Framework/GHEP/GHepUtils.h"
-  #include "GENIE/Tools/Flux/GCylindTH1Flux.h"
-  #include "GENIE/Tools/Flux/GMonoEnergeticFlux.h"
-  #include "GENIE/Tools/Flux/GNuMIFlux.h"
-  #include "GENIE/Tools/Flux/GSimpleNtpFlux.h"
-  #include "GENIE/Tools/Flux/GFluxDriverFactory.h"
+  #include "GENIE/GHEP/GHepUtils.h"
+  #include "GENIE/FluxDrivers/GCylindTH1Flux.h"
+  #include "GENIE/FluxDrivers/GMonoEnergeticFlux.h"
+  #include "GENIE/FluxDrivers/GNuMIFlux.h"
+  #include "GENIE/FluxDrivers/GSimpleNtpFlux.h"
+  #include "GENIE/FluxDrivers/GFluxDriverFactory.h"
   #if __GENIE_RELEASE_CODE__ >= GRELCODE(2,11,0)
-    #include "GENIE/Tools/Flux/GBGLRSAtmoFlux.h"  //for atmo nu generation
-    #include "GENIE/Tools/Flux/GFLUKAAtmoFlux.h"  //for atmo nu generation
+    #include "GENIE/FluxDrivers/GBGLRSAtmoFlux.h"  //for atmo nu generation
+    #include "GENIE/FluxDrivers/GFLUKAAtmoFlux.h"  //for atmo nu generation
   #else
     #include "GENIE/FluxDrivers/GBartolAtmoFlux.h"  //for atmo nu generation
     #include "GENIE/FluxDrivers/GFlukaAtmo3DFlux.h" //for atmo nu generation
   #endif
   #if __GENIE_RELEASE_CODE__ >= GRELCODE(2,12,2)
-    #include "GENIE/Tools/Flux/GHAKKMAtmoFlux.h" // for atmo nu generation
+    #include "GENIE/FluxDrivers/GHAKKMAtmoFlux.h" // for atmo nu generation
   #endif
-  #include "GENIE/Tools/Flux/GAtmoFlux.h"        //for atmo nu generation
+  #include "GENIE/FluxDrivers/GAtmoFlux.h"        //for atmo nu generation
 
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wunused-variable"
-  #include "GENIE/Framework/Conventions/Constants.h" //for calculating event kinematics
+  #include "GENIE/Conventions/Constants.h" //for calculating event kinematics
   #pragma GCC diagnostic pop
 
-  #include "GENIE/Framework/ParticleData/PDGLibrary.h"
-  #include "GENIE/Framework/ParticleData/PDGCodes.h"
-  #include "GENIE/Framework/Utils/AppInit.h"
-  #include "GENIE/Framework/Utils/RunOpt.h"
+  #include "GENIE/PDG/PDGLibrary.h"
+  #include "GENIE/PDG/PDGCodes.h"
+  #include "GENIE/Utils/AppInit.h"
+  #include "GENIE/Utils/RunOpt.h"
 
-  #include "GENIE/Tools/Geometry/ROOTGeomAnalyzer.h"
-  #include "GENIE/Tools/Geometry/GeomVolSelectorFiducial.h"
-  #include "GENIE/Tools/Geometry/GeomVolSelectorRockBox.h"
-  #include "GENIE/Framework/Utils/StringUtils.h"
-  #include "GENIE/Framework/Utils/XmlParserUtils.h"
-  #include "GENIE/Framework/Interaction/InitialState.h"
-  #include "GENIE/Framework/Interaction/Interaction.h"
-  #include "GENIE/Framework/Interaction/Kinematics.h"
-  #include "GENIE/Framework/Interaction/KPhaseSpace.h"
-  #include "GENIE/Framework/Interaction/ProcessInfo.h"
-  #include "GENIE/Framework/Interaction/XclsTag.h"
-  #include "GENIE/Framework/GHEP/GHepParticle.h"
-  #include "GENIE/Framework/ParticleData/PDGCodeList.h"
+  #include "GENIE/Geo/ROOTGeomAnalyzer.h"
+  #include "GENIE/Geo/GeomVolSelectorFiducial.h"
+  #include "GENIE/Geo/GeomVolSelectorRockBox.h"
+  #include "GENIE/Utils/StringUtils.h"
+  #include "GENIE/Utils/XmlParserUtils.h"
+  #include "GENIE/Interaction/InitialState.h"
+  #include "GENIE/Interaction/Interaction.h"
+  #include "GENIE/Interaction/Kinematics.h"
+  #include "GENIE/Interaction/KPhaseSpace.h"
+  #include "GENIE/Interaction/ProcessInfo.h"
+  #include "GENIE/Interaction/XclsTag.h"
+  #include "GENIE/GHEP/GHepParticle.h"
+  #include "GENIE/PDG/PDGCodeList.h"
 
-  #include "GENIE/Tools/Flux/GFluxBlender.h"
-  #include "GENIE/Tools/Flux/GFlavorMixerI.h"
-  #include "GENIE/Tools/Flux/GFlavorMap.h"
-  #include "GENIE/Tools/Flux/GFlavorMixerFactory.h"
+  #include "GENIE/FluxDrivers/GFluxBlender.h"
+  #include "GENIE/FluxDrivers/GFlavorMixerI.h"
+  #include "GENIE/FluxDrivers/GFlavorMap.h"
+  #include "GENIE/FluxDrivers/GFlavorMixerFactory.h"
 
 #else
   // GENIE R-3 reorganized headers

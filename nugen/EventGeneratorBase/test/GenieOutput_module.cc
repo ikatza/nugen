@@ -18,13 +18,13 @@
 
 // GENIE includes
 #ifdef GENIE_PRE_R3
-  #include "GENIE/Framework/Messenger/Messenger.h"
+  #include "GENIE/Messenger/Messenger.h"
   #include "Ntuple/NtpMCFormat.h"
   #include "Ntuple/NtpWriter.h"
   #include "Ntuple/NtpMCEventRecord.h"
   //#include "Ntuple/NtpMCTreeHeader.h"
-  #include "Framework/ParticleData/PDGLibrary.h"
-  #include "Framework/GHEP/GHepRecord.h"
+  #include "PDG/PDGLibrary.h"
+  #include "GHEP/GHepRecord.h"
 #else
   #include "GENIE/Framework/Messenger/Messenger.h"
   #include "GENIE/Framework/ParticleData/PDGLibrary.h"
