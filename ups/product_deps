@@ -13,7 +13,7 @@ defaultqual     e17
 # The examples here reflect the defaults
 incdir      product_dir include
 libdir      fq_dir      lib
-bindir      fq_dir      bin
+bindir      product_dir bin
 #
 product         version
 art_root_io     v1_00_06
