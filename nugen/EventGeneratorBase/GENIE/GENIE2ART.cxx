@@ -22,13 +22,13 @@
 
 //GENIE includes
 #ifdef GENIE_PRE_R3
-  #include "Conventions/GVersion.h"
-  #include "Conventions/Units.h"
+  #include "Framework/Conventions/GVersion.h"
+  #include "Framework/Conventions/Units.h"
   #include "Framework/EventGen/EventRecord.h"
   #include "Framework/GHEP/GHepUtils.h"
   #include "Framework/ParticleData/PDGCodes.h"
   #include "Framework/ParticleData/PDGLibrary.h"
-  #include "GENIE/Utils/RunOpt.h"
+  #include "GENIE/Framework/Utils/RunOpt.h"
 
   #include "Framework/Interaction/InitialState.h"
   #include "Framework/Interaction/Interaction.h"
@@ -38,12 +38,12 @@
   #include "Framework/Interaction/XclsTag.h"
   #include "Framework/GHEP/GHepParticle.h"
   #include "Framework/ParticleData/PDGCodeList.h"
-  #include "Conventions/Constants.h" //for calculating event kinematics
+  #include "Framework/Conventions/Constants.h" //for calculating event kinematics
 
   #include "EVGDrivers/GFluxI.h"
-  #include "FluxDrivers/GFluxBlender.h"
-  #include "FluxDrivers/GNuMIFlux.h"
-  #include "FluxDrivers/GSimpleNtpFlux.h"
+  #include "Tools/Flux/GFluxBlender.h"
+  #include "Tools/Flux/GNuMIFlux.h"
+  #include "Tools/Flux/GSimpleNtpFlux.h"
 #else
   // GENIE R-3 reorganized headers
   #include "GENIE/Framework/Conventions/GVersion.h"

@@ -17,10 +17,10 @@
 
 //GENIE includes
 #ifdef GENIE_PRE_R3
-  #include "Conventions/Units.h"
+  #include "Framework/Conventions/Units.h"
   #include "Framework/EventGen/EventRecord.h"
   #include "Framework/GHEP/GHepUtils.h"
-  #include "Messenger/Messenger.h"
+  #include "Framework/Messenger/Messenger.h"
 
   #include "RwFramework/GReWeightI.h"
   #include "RwFramework/GSystSet.h"
@@ -47,8 +47,8 @@
 //#include "Geo/ROOTGeomAnalyzer.h"
 //#include "Geo/GeomVolSelectorFiducial.h"
 //#include "Geo/GeomVolSelectorRockBox.h"
-  #include "Utils/StringUtils.h"
-  #include "Utils/XmlParserUtils.h"
+  #include "Framework/Utils/StringUtils.h"
+  #include "Framework/Utils/XmlParserUtils.h"
   #include "Framework/Interaction/InitialState.h"
   #include "Framework/Interaction/Interaction.h"
   #include "Framework/Interaction/Kinematics.h"
@@ -57,7 +57,7 @@
   #include "Framework/Interaction/XclsTag.h"
   #include "Framework/GHEP/GHepParticle.h"
   #include "Framework/ParticleData/PDGCodeList.h"
-  #include "Conventions/Constants.h" //for calculating event kinematics
+  #include "Framework/Conventions/Constants.h" //for calculating event kinematics
 
 #else
   // GENIE includes R-3 and beyond

@@ -18,7 +18,7 @@
 
 //GENIE includes
 #ifdef GENIE_PRE_R3
-  #include "Conventions/Units.h"
+  #include "Framework/Conventions/Units.h"
   #include "Framework/EventGen/EventRecord.h"
   #include "Framework/GHEP/GHepUtils.h"
 
@@ -57,7 +57,7 @@
   #include "Framework/Interaction/XclsTag.h"
   #include "Framework/GHEP/GHepParticle.h"
   #include "Framework/ParticleData/PDGCodeList.h"
-  #include "Conventions/Constants.h" //for calculating event kinematics
+  #include "Framework/Conventions/Constants.h" //for calculating event kinematics
 
 #else
   // GENIE includes R-3 and beyond

@@ -18,7 +18,7 @@
 
 // GENIE includes
 #ifdef GENIE_PRE_R3
-  #include "GENIE/Messenger/Messenger.h"
+  #include "GENIE/Framework/Messenger/Messenger.h"
   #include "Ntuple/NtpMCFormat.h"
   #include "Ntuple/NtpWriter.h"
   #include "Ntuple/NtpMCEventRecord.h"

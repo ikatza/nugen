@@ -30,8 +30,8 @@
   //#include "Messenger/Messenger.h"
   #include "Framework/GHEP/GHepRecord.h"
 
-  #include "FluxDrivers/GNuMIFlux.h"
-  #include "FluxDrivers/GSimpleNtpFlux.h"
+  #include "Tools/Flux/GNuMIFlux.h"
+  #include "Tools/Flux/GSimpleNtpFlux.h"
 #else
   #include "GENIE/Framework/ParticleData/PDGLibrary.h"
   #include "GENIE/Framework/GHEP/GHepRecord.h"
