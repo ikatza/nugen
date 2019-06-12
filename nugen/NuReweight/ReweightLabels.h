@@ -8,7 +8,7 @@
 #define RWGT_REWEIGHTLABEL_H
 
 #ifdef GENIE_PRE_R3
-  #include "ReWeight/GSyst.h"
+  #include "RwFramework/GSyst.h"
 #else
   #include "RwFramework/GSyst.h"
 #endif

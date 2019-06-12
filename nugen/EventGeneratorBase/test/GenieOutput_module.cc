@@ -23,8 +23,8 @@
   #include "Ntuple/NtpWriter.h"
   #include "Ntuple/NtpMCEventRecord.h"
   //#include "Ntuple/NtpMCTreeHeader.h"
-  #include "PDG/PDGLibrary.h"
-  #include "GHEP/GHepRecord.h"
+  #include "Framework/ParticleData/PDGLibrary.h"
+  #include "Framework/GHEP/GHepRecord.h"
 #else
   #include "GENIE/Framework/Messenger/Messenger.h"
   #include "GENIE/Framework/ParticleData/PDGLibrary.h"
