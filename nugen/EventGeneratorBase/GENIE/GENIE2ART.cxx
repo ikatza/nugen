@@ -287,7 +287,7 @@ void evgb::FillMCTruth(const genie::EventRecord *record,
 
   // set the neutrino information in MCTruth
   truth.SetOrigin(simb::kBeamNeutrino);
-  truth.SetGeneratorInfo(Generator_t::kGENIE, genieVersion, {"tune", genieTune});
+  truth.SetGeneratorInfo(simb::Generator_t::kGENIE, genieVersion, {{"tune", genieTune}});
 
   // The genie event kinematics are subtle different from the event
   // kinematics that a experimentalist would calculate
