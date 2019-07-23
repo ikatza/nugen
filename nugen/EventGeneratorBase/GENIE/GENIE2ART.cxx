@@ -178,16 +178,21 @@ void evgb::SetEventGeneratorListAndTune(const std::string& evtgenlistname,
 // double spillTime = fGlobalTimeOffset +
 //    fHelperRandom->Uniform()*fRandomTimeOffset;
 
-void evgb::FillMCTruth(const genie::EventRecord *record, double spillTime,
-                       simb::MCTruth &truth)
+void evgb::FillMCTruth(const genie::EventRecord *record,
+                       double spillTime,
+                       simb::MCTruth &truth,
+                       const std::string & genieVersion,
+                       const std::string & genieTune)
 {
   TLorentzVector vtxOffset(0,0,0,spillTime);
-  FillMCTruth(record,vtxOffset,truth);
+  FillMCTruth(record,vtxOffset,truth,genieVersion,genieTune);
 }
 
 void evgb::FillMCTruth(const genie::EventRecord *record,
                        TLorentzVector &vtxOffset,
-                       simb::MCTruth  &truth)
+                       simb::MCTruth  &truth,
+                       const std::string & genieVersion,
+                       const std::string & genieTune)
 {
   TLorentzVector *vertex = record->Vertex();
 
@@ -282,6 +287,7 @@ void evgb::FillMCTruth(const genie::EventRecord *record,
 
   // set the neutrino information in MCTruth
   truth.SetOrigin(simb::kBeamNeutrino);
+  truth.SetGeneratorInfo(Generator_t::kGENIE, genieVersion, {"tune", genieTune});
 
   // The genie event kinematics are subtle different from the event
   // kinematics that a experimentalist would calculate
