@@ -1912,6 +1912,9 @@ namespace evgb {
 
     // set the neutrino information in MCTruth
     truth.SetOrigin(simb::kBeamNeutrino);
+    truth.SetGeneratorInfo(simb::Generator_t::kGENIE,
+                           __GENIE_RELEASE__,
+                           {"tune", fTuneName});
 
 #ifdef OLD_KINE_CALC
     // The genie event kinematics are subtle different from the event
