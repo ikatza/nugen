@@ -152,6 +152,18 @@ namespace evg {
       Comment("random number seed"),
       0
     };
+
+    Atom<std::string> inputGenieVersion {
+      Name("inputGenieVersion"),
+      Comment("Version of GENIE used previously to generate the input events (default"),
+      "unknown"
+    };
+
+    Atom<std::string> inputGenieTune {
+      Name("inputGenieTune"),
+      Comment("GENIE Comprehensive Model Configuration (CMC/'tune') used to generate the input events for GENIE 3.0+"),
+      ""
+    };
   }; // AddGenieEventsToArtParams
 }
 
@@ -544,7 +556,7 @@ void evg::AddGenieEventsToArt::produce(art::Event & evt)
     TLorentzVector vtxOffset(xoff,yoff,zoff,evtTimeOffset);
 
     // convert to simb:: ART objects using GENIE2ART functions
-    evgb::FillMCTruth(grec,vtxOffset,mctruth);
+    evgb::FillMCTruth(grec,vtxOffset,mctruth,fParams().inputGenieVersion(),fParams().inputGenieTune());
     evgb::FillGTruth(grec,gtruth);
 
     if (fAddMCFlux) {
