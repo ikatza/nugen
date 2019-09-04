@@ -55,10 +55,14 @@ namespace evgb {
   // adapted from GENIEHelper
   void FillMCTruth(const genie::EventRecord* grec,
                    double spillTime,
-                   simb::MCTruth& mctruth);
+                   simb::MCTruth& mctruth,
+                   const std::string & genieVersion="unknown",
+                   const std::string & genieTune="unknown");
   void FillMCTruth(const genie::EventRecord* grec,
                    TLorentzVector& vtxOffset,
-                   simb::MCTruth& mctruth);
+                   simb::MCTruth& mctruth,
+                   const std::string & genieVersion="unknown",
+                   const std::string & genieTune="unknown");
   void FillGTruth(const genie::EventRecord* grec,
                   simb::GTruth& gtruth);
 
