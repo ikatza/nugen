@@ -5,4 +5,4 @@ install_source()
 
 add_subdirectory(GENIE)
 add_subdirectory(GiBUU)
-##add_subdirectory(test)
+add_subdirectory(test)
