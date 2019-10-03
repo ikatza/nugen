@@ -1,6 +1,6 @@
 # The parent line must be the first non-comment line in the file
 # This line defines the product name and version
-parent nugen  v1_05_02
+parent nugen  v1_05_03
 defaultqual     e17
 
 # These optional lines define the installed directories where
@@ -16,9 +16,9 @@ libdir      fq_dir      lib
 bindir      product_dir bin
 #
 product         version
-art_root_io     v1_00_09
-nusimdata       v1_19_01
-dk2nugenie      v01_08_00d
+art_root_io     v1_00_10
+nusimdata       v1_19_02
+dk2nugenie      v01_08_00f
 ifdh_art        v2_08_09
 cetbuildtools   v7_13_02        -        only_for_build
 end_product_list
