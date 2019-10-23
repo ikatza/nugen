@@ -1,5 +1,6 @@
 
-art_make( MODULE_LIBRARIES nusimdata_SimulationBase
+art_make( EXCLUDE EventGeneratorTest_module.cc
+          MODULE_LIBRARIES nusimdata_SimulationBase
                            nugen_EventGeneratorBase_GENIE
                         art_Framework_Services_Optional_RandomNumberGenerator_service
                         art_Framework_Services_Registry
