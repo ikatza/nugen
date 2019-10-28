@@ -1639,7 +1639,7 @@ namespace evgb {
       spilltime += fTimeShifter->TimeOffset();
     }
 
-    evgb::FillMCTruth(fGenieEventRecord, spilltime, truth);
+    evgb::FillMCTruth(fGenieEventRecord, spilltime, truth, __GENIE_RELEASE__, fTuneName);
     evgb::FillGTruth(fGenieEventRecord, gtruth);
 #else
     // fill the MC truth information as we have a good interaction
