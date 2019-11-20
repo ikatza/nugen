@@ -23,18 +23,22 @@
 
 // GENIE includes
 #ifdef GENIE_PRE_R3
+  #include "Conventions/GVersion.h"
   #include "Ntuple/NtpMCEventRecord.h"
   #include "Ntuple/NtpMCTreeHeader.h"
   #include "PDG/PDGLibrary.h"
   // -- GENIE Messenger conflict LOG_INFO w/ ART messagefacility
   //#include "Messenger/Messenger.h"
   #include "GHEP/GHepRecord.h"
+  #include "GHEP/GHepParticle.h"
 
   #include "FluxDrivers/GNuMIFlux.h"
   #include "FluxDrivers/GSimpleNtpFlux.h"
 #else
+  #include "GENIE/Framework/Conventions/GVersion.h"
   #include "GENIE/Framework/ParticleData/PDGLibrary.h"
   #include "GENIE/Framework/GHEP/GHepRecord.h"
+  #include "GENIE/Framework/GHEP/GHepParticle.h"
   #include "GENIE/Framework/Ntuple/NtpMCFormat.h"
   #include "GENIE/Framework/Ntuple/NtpWriter.h"
   #include "GENIE/Framework/Ntuple/NtpMCEventRecord.h"
@@ -67,6 +71,7 @@
 #include <fstream>
 #include <cstdio>
 #include <iomanip>
+#include <sstream>
 
 #include "nugen/EventGeneratorBase/GENIE/EVGBAssociationUtil.h"
 
@@ -107,7 +112,7 @@ namespace evg {
       Comment("time distribution beyond globalTimeOffset (in ns)\n"
               "  e.g.  \"flat: 1000\"\n"
               "        \"numi: \"\n"
-              "currently does not support modified numi parameters"),
+              " see:  https://cdcvs.fnal.gov/redmine/projects/nutools/wiki/GENIEHelper#EvtTimeFNALBeam"),
       "numi:"
     };
     struct VtxOffsets {
@@ -127,12 +132,6 @@ namespace evg {
       Comment("attempt to fetch and fill MCFlux for each genie::EventRecord"),
       true
     };
-    Atom<bool>        randomEntries {
-      Name("randomEntries"),
-      Comment("use random sets of entries from input files\n"
-              "rather than go through the files sequentially"),
-      true
-    };
     Atom<int>         outputPrintLevel {
       Name("outputPrintLevel"),
       Comment("print fetched genie::EventRecord -1=no, 13=max info\n"
@@ -146,7 +145,19 @@ namespace evg {
               "otherwise string with %l replaced by module_label"),
       "AddGenieEventsToArt_%l.txt"
     };
-      // want this to be optional ...
+    Atom<bool>        randomEntries {
+      Name("randomEntries"),
+      Comment("use random sets of entries from input files\n"
+              "rather than go through the files sequentially"),
+      false
+    };
+    Atom<int> numberToSkip {
+      Name("numberToSkip"),
+      Comment("Skip the first N entries, starting on the entry \n"
+      "specified in this variable"),
+      0
+    };
+    // want this to be optional ...
     Atom<int>         seed {
       Name("seed"),
       Comment("random number seed"),
@@ -212,7 +223,8 @@ private:
                           kFlat,
                           kPoisson,
                           kPoissonMinus1,
-                          kGaussian } RndDist_t;
+                          kGaussian,
+                          kRootino } RndDist_t;
 
   // Private member functions here.
   void         ParseCountConfig();
@@ -245,6 +257,7 @@ private:
   std::ostream*                    fOutputStream;
 
   // parsed NumToAddString parameters
+  std::string                      fDistName;
   RndDist_t                        fRndDist;
   double                           fRndP1;
   double                           fRndP2;
@@ -279,10 +292,11 @@ evg::AddGenieEventsToArt::AddGenieEventsToArt(const Parameters& params)
   , fXlo(0), fYlo(0), fZlo(0)
   , fXhi(0), fYhi(0), fZhi(0)
   , fAddMCFlux(false)
-  , fRandomEntries(true)
+  , fRandomEntries(false)
   , fOutputPrintLevel(-1)
   , fOutputStream(0)
     //
+  , fDistName("")
   , fRndDist(kUnknownDist)
   , fRndP1(-1)
   , fRndP2(-1)
@@ -310,20 +324,18 @@ evg::AddGenieEventsToArt::AddGenieEventsToArt(const Parameters& params)
   fMyModuleType  = fParams.get_PSet().get<std::string>("module_type");
   fMyModuleLabel = fParams.get_PSet().get<std::string>("module_label");
 
-  mf::LogInfo("AddGenieEventsToArt")
+  mf::LogDebug("AddGenieEventsToArt")
     << " ctor start " << fMyModuleLabel
     << " (" << fMyModuleType << ") " << std::endl << std::flush;
 
-  fFileList = fParams().fileList();
-
-  ParseCountConfig();
-  ParseVtxOffsetConfig();
-  ParseTimeConfig();
+  fFileList         = fParams().fileList();
   fGlobalTimeOffset = fParams().globalTimeOffset();
   fAddMCFlux        = fParams().addMCFlux();
   fRandomEntries    = fParams().randomEntries();
 
-  // Call appropriate produces<>() functions here.
+  ParseCountConfig();
+  ParseVtxOffsetConfig();
+  ParseTimeConfig();
 
   produces< std::vector<simb::MCTruth> >();
   produces< std::vector<simb::GTruth>  >();
@@ -340,14 +352,17 @@ evg::AddGenieEventsToArt::AddGenieEventsToArt(const Parameters& params)
 
   std::string outFileList = "adding file pattern: ";
   for (size_t i=0; i < fFileList.size(); ++i) {
-    outFileList += "\n";
+    outFileList += "\n\t";
     outFileList += fFileList[i];
     fGTreeChain->Add(fFileList[0].c_str());
   }
-  mf::LogInfo("AddGenieEventsToArt") << outFileList;
+  mf::LogDebug("AddGenieEventsToArt") << outFileList;
 
   fNumMCRec = fGTreeChain->GetEntries();
-  fLastUsedMCRec = fNumMCRec;
+  // fLastUsedMCRec is size_t so, unsigned we can't set it to -1
+  // which we'd like to so that the first pre-increment gives us "0"
+  size_t skip       = fParams().numberToSkip();
+  fLastUsedMCRec    = (skip==0) ? fNumMCRec : skip - 1;
 
   // attach flux branches ...
   /**
@@ -418,8 +433,15 @@ evg::AddGenieEventsToArt::AddGenieEventsToArt(const Parameters& params)
   } // while ( next )
 
   mf::LogInfo("AddGenieEventsToArt")
+    << fMyModuleLabel
+    << " (" << fMyModuleType << ") "
     << "chain has " << fNumMCRec << " entries"
     << std::endl;
+  if ( fNumMCRec == 0 ) {
+    throw cet::exception("badInput")
+      << "input files have zero entries "
+      << __FILE__ << ":" << __LINE__;
+  }
 
   // setup to write out file, if requested
   if ( fOutputPrintLevel > 0 ) {
@@ -435,7 +457,7 @@ evg::AddGenieEventsToArt::AddGenieEventsToArt(const Parameters& params)
       if ( posl != std::string::npos ) {
         fOutputDumpFileName.replace(posl,2,fMyModuleLabel);
       }
-      mf::LogInfo("AddGenieEventToArt")
+      mf::LogDebug("AddGenieEventToArt")
         << "#### AddGenieEventsToArt::ctor open "
         << fOutputDumpFileName
         << std::endl << std::flush;
@@ -454,7 +476,7 @@ evg::AddGenieEventsToArt::~AddGenieEventsToArt()
   if ( fOutputStream && ( fOutputDumpFileName != "std::cout" ) ) {
     std::ofstream* ofs = dynamic_cast<std::ofstream*>(fOutputStream);
     if ( ofs ) {
-      mf::LogInfo("AddGenieEventToArt")
+      mf::LogDebug("AddGenieEventToArt")
         << "#### AddGenieEventsToArt::dtor close "
         << fOutputDumpFileName
         << std::endl << std::flush;
@@ -486,8 +508,6 @@ void evg::AddGenieEventsToArt::produce(art::Event & evt)
 
   // number of interactions to add to _this_ record/"event"
   size_t n = GetNumToAdd();
-  //std::cerr << "#### AddGenieEventsToArt::produce " << n
-  //          << " MCTruth objects" << std::endl << std::flush;
 
   // make a list of entries in TChain to use for this overlay
   // same entry should never be in the list twice ...
@@ -495,14 +515,20 @@ void evg::AddGenieEventsToArt::produce(art::Event & evt)
 
   CLHEP::RandFlat flat(fEngine);
 
-  //mf::LogInfo("AddGeniEventsToArt") << "attempt to get " << n << " entries";
+  mf::LogDebug("AddGeniEventsToArt") << "#### AddGenieEventsToArt::produce "
+                                    << "attempt to get " << n << " entries "
+                                    << "from " << fDistName << " distribution";
+  //std::ostringstream msg;
+  //msg << "add indx to list: \n";
   while ( entries.size() != n ) {
     if ( ! fRandomEntries ) {
       // going through file sequentially
       ++fLastUsedMCRec;
+      // fLsatUseMCRec is size_t so never less than zero
       if ( fLastUsedMCRec >= fNumMCRec ) fLastUsedMCRec = 0;
       entries.push_back(fLastUsedMCRec);
-      // mf::LogInfo("AddGeniEventsToArt") << "adding " << fLastUsedMCRec;
+      //msg << " [" << entries.size()-1 << "] = "
+      //    << fLastUsedMCRec << '\n';
     } else {
       size_t indx = flat.fireInt(fNumMCRec);
       // ensure it isn't already there ..
@@ -511,11 +537,13 @@ void evg::AddGenieEventsToArt::produce(art::Event & evt)
         //                                   << indx << " as already there";
       } else {
         entries.push_back(indx);
-        // mf::LogInfo("AddGeniEventsToArt") << "adding " << indx;
+        //msg << " [" << entries.size()-1 << "] = "
+        //    << indx << '\n';
       }
     }
   }
-  //mf::LogInfo("AddGeniEventsToArt") << "entries.size " << entries.size();
+  //mf::LogInfo("AddGeniEventsToArt") << "entries.size " << entries.size()
+  //                                  << " " << msg.str();
 
   for (size_t i=0; i<n; ++i) {
     simb::MCTruth mctruth;
@@ -523,12 +551,30 @@ void evg::AddGenieEventsToArt::produce(art::Event & evt)
     simb::MCFlux  mcflux;
 
     size_t ientry = entries[i];
+    mf::LogDebug("AddGenieEventsToArt")
+      << "Event: " << i << " - Using entry " << ientry << std::endl;
+    fMCRec->Clear(); // don't leak previously fetched info
     // fetch a single entry from GENIE input file
     fGTreeChain->GetEntry(ientry);
     genie::EventRecord* grec = fMCRec->event;
 
+    if (fRndDist == kRootino) {
+      // check for end-condition
+      //  exactly 1 particle which is a rootino (pdg=0)
+      if ( grec->GetEntries() == 1 ) {
+        genie::GHepParticle* p = grec->Particle(0);
+        if ( p && p->Pdg() == 0 ) {
+          // update where we left off
+          fLastUsedMCRec = ientry;
+          // we're done with the loop, don't go on
+          // and don't add this marker to the art event record
+          break;
+        }
+      }
+    }
+
     /*
-    mf::LogInfo("AddGeniEventsToArt")
+    mf::LogInfo("AddGenieEventsToArt")
       << "#### AddGenieEventsToArt::produce " << i+1 << " of " << n
       << " using entry " << ientry
       << std::endl;
@@ -536,13 +582,18 @@ void evg::AddGenieEventsToArt::produce(art::Event & evt)
 
     if ( fOutputStream ) {
       // alas not currently able to get current setting
-      // int plevel = genie::GHepRecord::GetPrintLevel(); //
+#if __GENIE_RELEASE_CODE__ >= GRELCODE(3,0,2)
+      int plevel = genie::GHepRecord::GetPrintLevel(); //
+#endif
       genie::GHepRecord::SetPrintLevel(fOutputPrintLevel); //
       //std::cerr << "####  AddGenieEventsToArt::produce() writing to "
       //          << fOutputDumpFileName
       //          << std::endl << std::flush;
       *fOutputStream << *fMCRec;
       fOutputStream->flush();
+#if __GENIE_RELEASE_CODE__ >= GRELCODE(3,0,2)
+      genie::GHepRecord::SetPrintLevel(plevel);
+#endif
     }
 
     // generate offset in time
@@ -556,10 +607,12 @@ void evg::AddGenieEventsToArt::produce(art::Event & evt)
     TLorentzVector vtxOffset(xoff,yoff,zoff,evtTimeOffset);
 
     // convert to simb:: ART objects using GENIE2ART functions
-    evgb::FillMCTruth(grec,vtxOffset,mctruth,fParams().inputGenieVersion(),fParams().inputGenieTune());
+    evgb::FillMCTruth(grec,vtxOffset,mctruth,
+                      fParams().inputGenieVersion(),
+                      fParams().inputGenieTune());
     evgb::FillGTruth(grec,gtruth);
 
-    if (fAddMCFlux) {
+    if ( fAddMCFlux ) {
       if ( fGNuMIFluxPassThroughInfo ) {
         double dk2gen = -99999.;
         evgb::FillMCFlux(fGNuMIFluxPassThroughInfo,dk2gen,mcflux);
@@ -650,6 +703,7 @@ void evg::AddGenieEventsToArt::ParseCountConfig()
   //    "poisson:    <Nmean>"
   //    "poisson-1:  <Nmean>"
   //    "gauss:      <mean> <rms>"
+  //    "rootino:    <maxentries>"  # pick an upper limit
 
   std::string str = fParams().countConfig();
 
@@ -660,14 +714,15 @@ void evg::AddGenieEventsToArt::ParseCountConfig()
       str.erase( 0, str.find_first_not_of(" \t\n")  );
 
   size_t i = str.find_first_of(" \t\n");
-  std::string distName = str.substr(0,i);
+  fDistName = str.substr(0,i);
   str.erase(0,i);
 
   // now 'str' should have 1 or 2 numerical values
+  // special case rootino allowed to have no numerical values
 
   int nf = sscanf(str.c_str(),"%lf %lf",&fRndP1,&fRndP2);
 
-  if ( nf == 0 ) {
+  if ( nf == 0 && fDistName.find("rootino") != 0 ) {
     mf::LogError("AddGenieEventsToArt")
       << "ParseCountConfig " << str
       << " had " << nf << " args, expected something '"
@@ -677,55 +732,65 @@ void evg::AddGenieEventsToArt::ParseCountConfig()
       << " badDist '" << str << "'";
   }
 
-  if ( distName.find("fix") == 0 || distName == "n" || distName == "n:" ) {
+  if ( fDistName.find("fix") == 0 || fDistName == "n" || fDistName == "n:" ) {
     fRndDist = kFixed;
     if ( nf != 1 ) {
       mf::LogError("AddGenieEventsToArt")
-        << "ParseCountConfig " << distName
+        << "ParseCountConfig " << fDistName
         << " had 2 args, expected 1: '"
         << str << "', ignoring 2nd" << std::endl;
     }
-  }
-  else if ( distName.find("flat") == 0 ) {
+  } else if ( fDistName.find("flat") == 0 ) {
     fRndDist = kFlat;
     if ( nf == 1 ) fRndP2 = fRndP1;
     // make sure they're ordered
     if ( fRndP2 < fRndP1 ) std::swap(fRndP1,fRndP2);
-  }
-  else if ( distName.find("poiss") == 0 ) {
+
+  } else if ( fDistName.find("poiss") == 0 ) {
     fRndDist = kPoisson;
-    if ( distName.find("-1") != std::string::npos ) fRndDist = kPoissonMinus1;
+    if ( fDistName.find("-1") != std::string::npos ) fRndDist = kPoissonMinus1;
     if ( nf != 1 ) {
       mf::LogError("AddGenieEventsToArt")
-        << "ParseCountConfig " << distName
+        << "ParseCountConfig " << fDistName
         << " had 2 args, expected 1: '"
         << str << "', ignoring 2nd" << std::endl;
     }
-  }
-  else if ( distName.find("gaus") == 0 ) {
+  } else if ( fDistName.find("gaus") == 0 ) {
     fRndDist = kGaussian;
     if ( nf != 2 ) {
       mf::LogError("AddGenieEventsToArt")
-        << "ParseCountConfig " << distName
+        << "ParseCountConfig " << fDistName
         << " had " << nf << " args, expected 2: '"
         << str << "'"<< std::endl;
       throw cet::exception("badDist countConfig")
         << __FILE__ << ":" << __LINE__
-        << " badDist '" << distName << "'";
+        << " badDist '" << fDistName << "'";
+    }
+  } else if ( fDistName.find("rootino") == 0 ) {
+    fRndDist = kRootino;
+    if ( fRndP1 < 1 ) fRndP1 = 9999;
+    if ( fRandomEntries ) {
+      mf::LogError("AddGenieEventsToArt")
+        << "ParseCountConfig " << fDistName
+        << " 'distribution' is incompatible with randomEntries=true"
+        << std::endl;
+      throw cet::exception("badDist incompatible DistConfig")
+        << __FILE__ << ":" << __LINE__
+        << " badDist '" << fDistName << "' w/ randomEntries=true";
     }
   } else {
       mf::LogError("AddGenieEventsToArt")
-        << "ParseCountConfig unknown distName " << distName
+        << "ParseCountConfig unknown fDistName " << fDistName
         << " had' " << nf << " args '"
         << str << "'"<< std::endl;
     throw cet::exception("unknownDist countConfig")
       << __FILE__ << ":" << __LINE__
-      << " unknown '" << distName << "'";
+      << " unknown '" << fDistName << "'";
   }
 
   mf::LogInfo("AddGenieEventsToArt")
     << "ParseCountConfig label='" << fMyModuleLabel << "'"
-    << " distName='" << distName  << "' (int)"
+    << " fDistName='" << fDistName  << "' (int)"
     << (int)fRndDist << "; cfgstr '" << str << "' --> "
     << " p1 " << fRndP1 << " p2 " << fRndP2 << " nf " << nf
     << std::endl;
@@ -745,6 +810,7 @@ void evg::AddGenieEventsToArt::ParseCountConfig()
     }
   }
 #endif
+
 }
 
 size_t evg::AddGenieEventsToArt::GetNumToAdd() const
@@ -757,6 +823,7 @@ size_t evg::AddGenieEventsToArt::GetNumToAdd() const
     {
       nchosen = fRndP1; // nothing random about it
     }
+    break;
   case kFlat:
     {
       CLHEP::RandFlat flat(fEngine);   // pass by ref, doesn't own
@@ -806,6 +873,11 @@ size_t evg::AddGenieEventsToArt::GetNumToAdd() const
       }
     }
     break;
+  case kRootino:
+    {
+      nchosen = fRndP1; // pre-chosen maximum
+    }
+    break;
   default:
     {
       nchosen = 0;
@@ -844,15 +916,19 @@ void evg::AddGenieEventsToArt::ParseTimeConfig()
     << " cfg='" << timeConfig << "'" << std::endl;
   if ( timeName == "none" ) timeName = "evgb::EvtTimeNone";
   if ( timeName == "flat" ) timeName = "evgb::EvtTimeFlat";
-  if ( timeName == "numi" || timeName == "NuMI"||
-       timeName == "fnal" || timeName == "FNAL"   )
+  if ( timeName == "numi" || timeName == "NuMI" ||
+       timeName == "fnal" || timeName == "FNAL"    )
     timeName = "evgb::EvtTimeFNALBeam";
+  if ( timeName == "Booster" || timeName == "booster" )
+    timeName = "evgb::EvtTimeFNALBeam Booster";
 
   evgb::EvtTimeShiftFactory& timeFactory =
     evgb::EvtTimeShiftFactory::Instance();
   fTimeShifter = timeFactory.GetEvtTimeShift(timeName,timeConfig);
 
-  if ( ! fTimeShifter ) {
+  if ( fTimeShifter ) {
+    fTimeShifter->PrintConfig();
+  } else {
     timeFactory.Print();
     throw cet::exception("BAD TimeShifter")
       << __FILE__ << ":" << __LINE__

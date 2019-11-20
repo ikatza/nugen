@@ -10,7 +10,7 @@ services:
   # Load the service that manages root files for histograms.
   TFileService:          { fileName: "addgenie_hist.root" closeFileFast: false }
   RandomNumberGenerator: {} #ART native random number generator
-  scheduler:             { wantTracer: true wantSummary: true }
+  # scheduler:             { wantTracer: true wantSummary: true }
 
   # IFDH:          {IFDH_BASE_URI:  "http://samweb.fnal.gov:8480/sam/nova/api"}
   # nope  @table::standard_services
@@ -44,9 +44,10 @@ physics:
     dk2nu:    @local::standard_add_genie
 #    gnumi:    @local::standard_add_genie
 #    gsimple:  @local::standard_add_genie
-##    nuone:    @local::standard_add_genie
+#    nuone:    @local::standard_add_genie
 #    protondk: @local::standard_add_genie
-##    rock:     @local::standard_add_genie
+#    rock:     @local::standard_add_genie
+#    rootino:  @local::standard_add_genie
   }
 
   analyzers:
@@ -119,6 +120,11 @@ physics.producers.dk2nu.countConfig:  "gauss: 2.0 1.5"
 #   zlo:  1
 #   zhi:  5
 #}
+### example of other flags, use only one or the other of these
+### skip the first 24 entries when reading sequentially
+#physics.producers.protondk.numberToSkip: 24
+### pull events from the file at random order
+#physics.producers.protondk.randomEntries: true
 
 ### these fake files don't have flux info (generated w/ gevgen)
 ##physics.producers.rock.fileList: [ "genie_samples/*rock*.ghep.root" ]
@@ -126,9 +132,17 @@ physics.producers.dk2nu.countConfig:  "gauss: 2.0 1.5"
 ##physics.producers.rock.addMCFlux: false # true
 ##physics.producers.rock.countConfig:  "poisson: 4.2"
 
+### these files have been "overlaid" via overlay_genie
+### spills are delineated by an event with just a rootino (not to be included)
+### they probably have already had time shifts applied
+physics.producers.rootino.fileList: [ "genie_samples/*overlay*.ghep.root" ]
+physics.producers.rootino.timeConfig: "none"
+physics.producers.rootino.addMCFlux: false
+physics.producers.rootino.countConfig:  "rootino"
+
 physics.analyzers.outputgenie.dumpFilePattern: "cout"
-physics.analyzers.outputgenie.dumpMCTruth: true
-physics.analyzers.outputgenie.dumpGTruth:  true
-physics.analyzers.outputgenie.dumpMCFlux:  true
+physics.analyzers.outputgenie.dumpMCTruth: false # true
+physics.analyzers.outputgenie.dumpGTruth:  false # true
+physics.analyzers.outputgenie.dumpMCFlux:  false # true
 
 # end-of-fcl
