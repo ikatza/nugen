@@ -10,13 +10,18 @@ standard_add_genie:
                                               #    "poisson:    <Nmean>"
                                               #    "poisson-1:  <Nmean>"
                                               #    "gauss:      <mean> <rms>"
-   globalTimeOffset:  218500.0             # (ns) add time to vertex t 
-                                           #   e.g. 10000 means the spill 
+                                              #    "rootino:    <maxentries>"
+       # rootino stops adding when event consisting of only a rootino
+       # is read in, per convention of Mike Kordosky's
+       # https://github.com/GENIE-MC-Community/OverlayGenie
+   globalTimeOffset:  218500.0             # (ns) add time to vertex t
+                                           #   e.g. 10000 means the spill
                                            #   happens 10 us into readout window
    timeConfig:  "flat 9600.0"              # shift beyond globalTimeOffset
                                            #    "none"
                                            #    "flat <delta-t-ns>"
                                            #    "NuMI"  beam distribution
+                                           #    "Booster"
 
    vtxOffsets: {
      xlo:  0
@@ -29,14 +34,19 @@ standard_add_genie:
 
    addMCFlux:         true                 # store associated MCFlux object
 
-                                           # dump events to output (file) 
+                                           # dump events to output (file)
                                            # as they're read in
    outputPrintLevel:  13                   # use -1 to suppress, 13 = full
    outputDumpFileName: "AddGenieEvents_%l.txt" # name of file to dump to
                                            # %l substitutes module label name
 
-   # seed: 1234
-  
+   # randomEntries: false         # false = read file sequentially
+                                  # true = pull random entries
+   # numberToSkip:  0             # in seq mode, skip N events from beginning
+   # seed: 1234                   # random seed
+   # inputGenieVersion: "unknown" # GENIE version used for generating
+                                  # input events (added to MCGeneratorInfo)
+   # inputGenieTune: ""           # GENIE tune used for generating input evts
 }
 
 END_PROLOG
