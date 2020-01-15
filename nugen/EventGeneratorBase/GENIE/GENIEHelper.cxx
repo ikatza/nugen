@@ -459,6 +459,11 @@ namespace evgb {
       evgb::EvtTimeShiftFactory& timeShiftFactory = evgb::EvtTimeShiftFactory::Instance();
       fTimeShifter = timeShiftFactory.GetEvtTimeShift(fSpillTimeConfig);
       if ( fTimeShifter ) {
+        if ( ! fTimeShifter->IsRandomGeneratorSeeded() ) {
+          mf::LogInfo("GENIEHelper")
+            << "Initialize spill time random generator with seed " << seedval;
+          fTimeShifter->GetRandomGenerator()->SetSeed(seedval);
+        }
         fTimeShifter->PrintConfig();
       } else {
         timeShiftFactory.Print();
@@ -1631,13 +1636,15 @@ namespace evgb {
     // these two objects are enough to reconstruct the GENIE record
     // use the new external functions in GENIE2ART
 
-    //choose a spill time (ns) to shift the vertex times by:
-    double spilltime = fGlobalTimeOffset;
+    // choose a time within the spill (ns) to shift the vertex times by:
+    double timeoffset = 0;
     if ( ! fTimeShifter ) {
-      spilltime += fHelperRandom->Uniform()*fRandomTimeOffset;
+      timeoffset = fHelperRandom->Uniform()*fRandomTimeOffset;
     } else {
-      spilltime += fTimeShifter->TimeOffset();
+      timeoffset = fTimeShifter->TimeOffset();
     }
+    // mf::LogInfo("GENIEHelper") << "TimeShifter adding " << timeoffset;
+    double spilltime  = fGlobalTimeOffset + timeoffset;
 
     evgb::FillMCTruth(fGenieEventRecord, spilltime, truth, __GENIE_RELEASE__, fTuneName);
     evgb::FillGTruth(fGenieEventRecord, gtruth);
