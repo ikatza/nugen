@@ -78,29 +78,9 @@ namespace evgb {
 
     // not the most sophisticated of parsing ... but FHICL would be overkill
 
-    std::string configLocal = config;
-    // convert string to lowercase
-    std::transform(configLocal.begin(),configLocal.end(),configLocal.begin(),::tolower);
+    std::vector<std::string> strs = GetConfigTokens(config);
+    // strings have all been tokenized and made lowercase
 
-    // for now make use of GENIE utilities
-    std::vector<std::string> strs =
-      genie::utils::str::Split(configLocal,"\t\n ,;=(){}[]");
-    // weed out blank ones
-    strs.erase(std::remove_if(strs.begin(), strs.end(),
-                              [](const std::string& x) {
-                                return ( x == "") ; // put your condition here
-                              }), strs.end());
-
-    // debugging info
-    std::ostringstream msgx;
-    msgx << "Config elements:" << std::endl;
-    for (size_t j=0; j<strs.size(); ++j) {
-      msgx << " [" << std::setw(3) << j << "] -->" << strs[j] << "<--\n";
-    }
-    // this should end up as LogDebug
-    mf::LogDebug("EvtTime") << msgx.str() << std::flush;
-
-    // blindly reduced UPPER -> lower case above to make this easier
     size_t nstrs = strs.size();
     for (size_t i=0; i<nstrs; ++i) {
       if ( strs[i] == "numi" ) {
@@ -170,6 +150,7 @@ namespace evgb {
         else if ( strs[i] == "nperbatch" ) fNBucketsPerBatch       = atoi(arg);
         else if ( strs[i] == "nfilled"   ) fNFilledBucketsPerBatch = atoi(arg);
         else if ( strs[i] == "global"    ) fGlobalOffset           = atof(arg);
+        else if ( strs[i] == "seed"      ) { ; } // handled in base
         else {
           mf::LogError("EvtTime")
             << "unknown EvtTimeFNALBeam config key '" << strs[i] << "'";

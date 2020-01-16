@@ -3,7 +3,7 @@
 /// \class evgb::EvtTimeShiftI
 /// \brief interface for event time distribution
 ///
-///        Specific implementations of this class when are used to 
+///        Specific implementations of this class when are used to
 ///        generate appropriate times relative to the t0 of a 'record'
 ///        (spill/snarl/trigger...).
 ///
@@ -27,9 +27,9 @@
 namespace evgb {
 
   class EvtTimeShiftI {
-    
+
   public:
-  
+
     EvtTimeShiftI(const std::string& config);
     virtual ~EvtTimeShiftI();
 
@@ -39,12 +39,12 @@ namespace evgb {
 
     /// each schema must take a string that configures it
     /// it is up to the individual model to parse said string
-    /// and extract parameters 
+    /// and extract parameters
     virtual void      Config(const std::string& config ) = 0;
 
-    /// return time (in nanoseconds) for an interaction/event 
+    /// return time (in nanoseconds) for an interaction/event
     /// within a record/spill/snarl
-    /// 
+    ///
     /// version taking array might be used for relative batch fractions
     /// that vary on a record-by-record basis
     virtual double    TimeOffset() = 0;
@@ -58,15 +58,19 @@ namespace evgb {
     /// Allow users some control over random # sequences
     /// An "owned" object is expected to be deleted by the EvtTimeShift obj
     ///
-    TRandom*         GetRandomGenerator()     const { return fRndmGen; }
-    bool             IsRandomGeneratorOwned() const { return fIsOwned; }
+    TRandom*         GetRandomGenerator()      const { return fRndmGen; }
+    bool             IsRandomGeneratorOwned()  const { return fIsOwned; }
+    bool             IsRandomGeneratorSeeded() const { return fIsSeeded; }
 
     void             SetRandomGenerator(TRandom* gen, bool isOwned);
 
   protected:
 
+    std::vector<std::string>   GetConfigTokens(const std::string& config);
+
     TRandom*         fRndmGen;
     bool             fIsOwned;
+    bool             fIsSeeded;
 
   };
 
