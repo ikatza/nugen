@@ -1901,8 +1901,8 @@ namespace evgb {
     if     (procInfo.IsQuasiElastic()       ) mode = simb::kQE;
     else if(procInfo.IsDeepInelastic()      ) mode = simb::kDIS;
     else if(procInfo.IsResonant()           ) mode = simb::kRes;
-    else if(procInfo.IsCoherent()           ) mode = simb::kCoh;
-    else if(procInfo.IsCoherentElas()       ) mode = simb::kCohElastic;
+    else if(procInfo.IsCoherentProduction() ) mode = simb::kCoh;
+    else if(procInfo.IsCoherentElastic()    ) mode = simb::kCohElastic;
     else if(procInfo.IsElectronScattering() ) mode = simb::kElectronScattering;
     else if(procInfo.IsNuElectronElastic()  ) mode = simb::kNuElectronElastic;
     else if(procInfo.IsInverseMuDecay()     ) mode = simb::kInverseMuDecay;
@@ -1964,7 +1964,7 @@ namespace evgb {
     double x, W2, W;
     x = W2 = W = -1;
 
-    if ( hitnucl || procInfo.IsCoherent() ) {
+    if ( hitnucl || procInfo.IsCoherentProduction() ) {
       const double M  = genie::constants::kNucleonMass;
       // Bjorken x.
       // Rein & Sehgal use this same formulation of x even for Coherent

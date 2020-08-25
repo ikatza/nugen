@@ -183,6 +183,7 @@ else()
   cet_find_library( GPHNUCLST    NAMES GPhNuclSt    PATHS ENV GENIE_LIB NO_DEFAULT_PATH )
   cet_find_library( GPHCMN       NAMES GPhCmn       PATHS ENV GENIE_LIB NO_DEFAULT_PATH )
   cet_find_library( GPHDCY       NAMES GPhDcy       PATHS ENV GENIE_LIB NO_DEFAULT_PATH )
+  cet_find_library( GPHHADTENS   NAMES GPhHadTens   PATHS ENV GENIE_LIB NO_DEFAULT_PATH )
   cet_find_library( GPHHADTRANSP NAMES GPhHadTransp PATHS ENV GENIE_LIB NO_DEFAULT_PATH )
   cet_find_library( GPHHADNZ     NAMES GPhHadnz     PATHS ENV GENIE_LIB NO_DEFAULT_PATH )
   cet_find_library( GPHDEEX      NAMES GPhDeEx      PATHS ENV GENIE_LIB NO_DEFAULT_PATH )
@@ -191,6 +192,8 @@ else()
   cet_find_library( GPHCHMXS     NAMES GPhChmXS     PATHS ENV GENIE_LIB NO_DEFAULT_PATH )
   cet_find_library( GPHCOHXS     NAMES GPhCohXS     PATHS ENV GENIE_LIB NO_DEFAULT_PATH )
   cet_find_library( GPHCOHEG     NAMES GPhCohEG     PATHS ENV GENIE_LIB NO_DEFAULT_PATH )
+  cet_find_library( GPHDNUXS     NAMES GPhDNuXS     PATHS ENV GENIE_LIB NO_DEFAULT_PATH )
+  cet_find_library( GPHDNUEG     NAMES GPhDNuEG     PATHS ENV GENIE_LIB NO_DEFAULT_PATH )
   cet_find_library( GPHDISXS     NAMES GPhDISXS     PATHS ENV GENIE_LIB NO_DEFAULT_PATH )
   cet_find_library( GPHDISEG     NAMES GPhDISEG     PATHS ENV GENIE_LIB NO_DEFAULT_PATH )
   cet_find_library( GPHDFRCXS    NAMES GPhDfrcXS    PATHS ENV GENIE_LIB NO_DEFAULT_PATH )
@@ -249,6 +252,7 @@ else()
                       ${GPHNUCLST}
                       ${GPHCMN}
                       ${GPHDCY}
+                      ${GPHHADTENS}
                       ${GPHHADTRANSP}
                       ${GPHHADNZ}
                       ${GPHDEEX}
@@ -257,6 +261,8 @@ else()
                       ${GPHCHMXS}
                       ${GPHCOHXS}
                       ${GPHCOHEG}
+                      ${GPHDNUXS}
+                      ${GPHDNUEG}
                       ${GPHDISXS}
                       ${GPHDISEG}
                       ${GPHDFRCXS}
