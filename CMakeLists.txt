@@ -44,7 +44,6 @@ find_ups_product( postgresql )
 find_ups_product( nusimdata )
 find_ups_product( cetlib )
 find_ups_product( cetlib_except )
-find_ups_product( cetbuildtools )
 
 message(STATUS "ROOTSYS is ${ROOTSYS}")
 
