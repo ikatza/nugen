@@ -1872,7 +1872,7 @@ namespace evgb {
 
       // set the vertex location for the neutrino, nucleus and everything
       // that is to be tracked.  vertex returns values in meters.
-      if(part->Status() == 0 || part->Status() == 1){
+      if(part->Status() == 0 || part->Status() == 1 || part->Status() == 3){
         vtx[0] = 100.*(part->Vx()*1.e-15 + vertex->X());
         vtx[1] = 100.*(part->Vy()*1.e-15 + vertex->Y());
         vtx[2] = 100.*(part->Vz()*1.e-15 + vertex->Z());
@@ -1894,6 +1894,7 @@ namespace evgb {
     // is the interaction NC or CC
     int CCNC = simb::kCC;
     if(procInfo.IsWeakNC()) CCNC = simb::kNC;
+    if(procInfo.IsDarkNeutralCurrent()) CCNC = simb::kNC;
 
     // what is the interaction type
     int mode = simb::kUnknownInteraction;
@@ -1914,6 +1915,7 @@ namespace evgb {
     else if(procInfo.IsDiffractive()        ) mode = simb::kDiffractive;
     else if(procInfo.IsEM()                 ) mode = simb::kEM;
     else if(procInfo.IsWeakMix()            ) mode = simb::kWeakMix;
+    if     (procInfo.IsDarkNeutralCurrent() ) mode = simb::kDarkNC;
 
     int itype = simb::kNuanceOffset + genie::utils::ghep::NuanceReactionCode(record);
 

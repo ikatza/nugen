@@ -240,7 +240,7 @@ void evgb::FillMCTruth(const genie::EventRecord *record,
 
     // set the vertex location for the neutrino, nucleus and everything
     // that is to be tracked.  vertex returns values in meters.
-    if (part->Status() == 0 || part->Status() == 1){
+    if (part->Status() == 0 || part->Status() == 1 || part->Status() == 3){
       vtx[0] = 100.*(part->Vx()*1.e-15 + vertex->X() + vtxOffset.X());
       vtx[1] = 100.*(part->Vy()*1.e-15 + vertex->Y() + vtxOffset.Y());
       vtx[2] = 100.*(part->Vz()*1.e-15 + vertex->Z() + vtxOffset.Z());
@@ -262,6 +262,7 @@ void evgb::FillMCTruth(const genie::EventRecord *record,
   // is the interaction NC or CC
   int CCNC = simb::kCC;
   if (procInfo.IsWeakNC()) CCNC = simb::kNC;
+  if (procInfo.IsDarkNeutralCurrent()) CCNC = simb::kNC;
 
   // what is the interaction type
   int mode = simb::kUnknownInteraction;
@@ -282,6 +283,7 @@ void evgb::FillMCTruth(const genie::EventRecord *record,
   else if (procInfo.IsDiffractive()        ) mode = simb::kDiffractive;
   else if (procInfo.IsEM()                 ) mode = simb::kEM;
   else if (procInfo.IsWeakMix()            ) mode = simb::kWeakMix;
+  if      (procInfo.IsDarkNeutralCurrent() ) mode = simb::kDarkNC;
 
   int itype = simb::kNuanceOffset + genie::utils::ghep::NuanceReactionCode(record);
 
