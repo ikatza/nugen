@@ -1876,7 +1876,7 @@ namespace evgb {
         vtx[0] = 100.*(part->Vx()*1.e-15 + vertex->X());
         vtx[1] = 100.*(part->Vy()*1.e-15 + vertex->Y());
         vtx[2] = 100.*(part->Vz()*1.e-15 + vertex->Z());
-        vtx[3] = part->Vt() + spillTime;
+        vtx[3] = (part->Vt()*(1.e9*1.e-24)) + vertex->T() + spillTime; // genie returns time in 1e-24 s, vtx[3] should be in nanoseconds
       }
       TLorentzVector pos(vtx[0], vtx[1], vtx[2], vtx[3]);
       TLorentzVector mom(part->Px(), part->Py(), part->Pz(), part->E());
